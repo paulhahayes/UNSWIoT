@@ -5,25 +5,62 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
-// delCmd represents deleting a device from a project
-var delCmd = &cobra.Command{
-	Use:   "del",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+func deleteDevice(dev string) error {
+	res, err := queries.Devices.Delete(dev)
+	if err != nil {
+		return err
+	}
+	if res {
+		fmt.Printf("Successfully deleted device %s\n", dev)
+	} else {
+		fmt.Printf("Failed to delete %s \n", dev)
+	}
+	return nil
+}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+func deleteAllDevices() error {
+	return queries.Devices.DeleteAll()
+}
+
+var (
+	deleteAll bool
+)
+var delCmd = &cobra.Command{
+	Use:   "del [deviceName]",
+	Short: "Delete a device or all devices",
+	Long:  `Delete a specific device by name, or use -A flag to delete all devices`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("del called")
+		var err error
+
+		switch {
+		case deleteAll:
+			err = deleteAllDevices()
+			if err != nil {
+				fmt.Fprintf(cmd.ErrOrStderr(), "Failed to delete all devices: %v\n", err)
+				return
+			}
+			fmt.Println("Successfully deleted all devices")
+
+		case len(args) == 0:
+			fmt.Fprintln(cmd.ErrOrStderr(), "Please include a device name or use -A to delete all devices")
+			cmd.Usage()
+			return
+
+		default:
+			err = deleteDevice(args[0])
+			if err != nil {
+				fmt.Fprintf(cmd.ErrOrStderr(), "Failed to delete device %s: %v\n", args[0], err)
+				return
+			}
+			fmt.Printf("Successfully deleted device %s\n", args[0])
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(delCmd)
+	delCmd.Flags().BoolVarP(&deleteAll, "all", "A", false, "Delete all devices")
 }

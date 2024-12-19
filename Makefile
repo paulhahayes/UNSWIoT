@@ -31,6 +31,8 @@ backend:
 db:
 	@sqlite3 $(DB_DIR)/$(DB_NAME).db < $(DB_DIR)/$(DB_NAME).sql
 
+db-test:
+	@sqlite3 $(DB_DIR)/Test_IoT.db < $(DB_DIR)/$(DB_NAME).sql
 clean:
 	@echo "Cleaning up..."
 	@sudo rm -f $(INSTALL_PATH)/$(CLI_NAME)

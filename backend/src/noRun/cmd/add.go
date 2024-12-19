@@ -5,7 +5,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func addDevice() {
+func addDevice(dev string) error {
+	err := queries.Devices.Add(dev)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 var addCmd = &cobra.Command{
@@ -13,7 +18,14 @@ var addCmd = &cobra.Command{
 	Short: "",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("add called")
+		if len(args) == 0 {
+			println("Please add a device name.")
+			return
+		}
+		if err := addDevice(args[0]); err != nil {
+			println(err.Error())
+		}
+		fmt.Println("Device successfully added")
 	},
 }
 

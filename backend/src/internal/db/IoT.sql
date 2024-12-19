@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS devices (
 
 DELETE FROM devices;
 
-INSERT INTO devices (name) VALUES ('test_device_1');
-INSERT INTO devices (name) VALUES ('test_device_2');
+INSERT INTO devices (name) VALUES ('tp-link');
+INSERT INTO devices (name) VALUES ('hikvision');

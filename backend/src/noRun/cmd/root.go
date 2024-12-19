@@ -27,7 +27,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(db)
 	queries = &Queries{
 		Devices: &sqlite.DeviceModel{
 			DB: db,
